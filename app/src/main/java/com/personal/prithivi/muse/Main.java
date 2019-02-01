@@ -2,18 +2,19 @@ package com.personal.prithivi.muse;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
-import java.util.ArrayList;
+import android.os.Bundle;
+import android.widget.Toast;
 
 public class Main extends AppCompatActivity {
+
+    private final int EXTERNAL_STORAGE_READ_SUCCESS = 2;
+    private final String DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE = "Unable to read from external storage.";
+    SongRetriever songRetriever = new SongRetriever(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,68 +24,45 @@ public class Main extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    1);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    EXTERNAL_STORAGE_READ_SUCCESS);
+
+        } else {
+
+            this.songRetriever.retrieveSongs();
 
         }
 
-        this.retrieveSongs();
+
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case EXTERNAL_STORAGE_READ_SUCCESS: {
 
-    public boolean hasSongs(ArrayList<String> songs) {
-        return !(songs.size() == 0);
-    }
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    this.songRetriever.retrieveSongs();
 
-    public ArrayList<String> retrieveSongs() {
-
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-        String[] projection = {
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DURATION
-        };
-        final String sortOrder = MediaStore.Audio.AudioColumns.TITLE + " COLLATE LOCALIZED ASC";
-        ArrayList<String> mp3Files = new ArrayList<>();
-
-        Cursor cursor = null;
-        try {
-            Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            cursor = getContentResolver().query(uri, projection, selection, null, sortOrder);
-            if( cursor != null){
-                cursor.moveToFirst();
-
-                while( !cursor.isAfterLast() ){
-                    String title = cursor.getString(0);
-                    String artist = cursor.getString(1);
-                    String path = cursor.getString(2);
-                    String displayName  = cursor.getString(3);
-                    String songDuration = cursor.getString(4);
-                    cursor.moveToNext();
-                    if(path != null && path.endsWith(".mp3")) {
-                        mp3Files.add(path);
-                    }
+                } else {
+                    Toast.makeText(this, this.DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE,
+                            Toast.LENGTH_LONG);
                 }
 
+
+                return;
             }
 
-            // print to see list of mp3 files
-            for( String file : mp3Files) {
-                Log.i("TAG", file);
-            }
-
-        } catch (Exception e) {
-            Log.e("TAG", e.toString());
-        }finally{
-            if( cursor != null){
-                cursor.close();
-            }
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
-
-        return mp3Files;
     }
+
+
 
 }
