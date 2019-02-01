@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class Main extends AppCompatActivity {
@@ -15,6 +16,7 @@ public class Main extends AppCompatActivity {
     private final int EXTERNAL_STORAGE_READ_SUCCESS = 2;
     private final String DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE = "Unable to read from external storage.";
     SongRetriever songRetriever = new SongRetriever(this);
+    private ImageView testImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,10 @@ public class Main extends AppCompatActivity {
             this.songRetriever.retrieveSongs();
 
         }
+
+
+        this.testImg = this.findViewById(R.id.testImage);
+
 
 
     }
