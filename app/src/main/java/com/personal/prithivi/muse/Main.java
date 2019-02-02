@@ -3,20 +3,23 @@ package com.personal.prithivi.muse;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class Main extends AppCompatActivity {
 
     private final int EXTERNAL_STORAGE_READ_SUCCESS = 2;
     private final String DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE = "Unable to read from external storage.";
-    SongRetriever songRetriever = new SongRetriever(this);
-    private ImageView testImg;
+    SongsManager songsManager = new SongsManager();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +35,30 @@ public class Main extends AppCompatActivity {
 
         } else {
 
-            this.songRetriever.retrieveSongs();
+            this.songsManager.retrieveSongs(this);
+            final ImageView testImg = this.findViewById(R.id.testImage);
+            final ProgressBar bar = this.findViewById(R.id.progressBar);
+
+
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    bar.setProgress((Integer)msg.obj);
+                    super.handleMessage(msg);
+                }
+            };
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    songsManager.cacheThumbnails(handler);
+                }
+            }).start();
+
+
 
         }
 
-
-        this.testImg = this.findViewById(R.id.testImage);
 
 
 
@@ -46,6 +67,7 @@ public class Main extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+
         switch (requestCode) {
             case EXTERNAL_STORAGE_READ_SUCCESS: {
 
@@ -53,15 +75,18 @@ public class Main extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    this.songRetriever.retrieveSongs();
+                    this.songsManager.retrieveSongs(this);
+                    ImageView testImg = this.findViewById(R.id.testImage);
+                    ProgressBar bar = this.findViewById(R.id.progressBar);
+
+                    //this.songsManager.cacheThumbnails(h);
 
                 } else {
                     Toast.makeText(this, this.DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE,
-                            Toast.LENGTH_LONG);
+                            Toast.LENGTH_LONG).show();
                 }
 
 
-                return;
             }
 
             // other 'case' lines to check for other
