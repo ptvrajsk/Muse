@@ -8,13 +8,15 @@ public class Song {
     private String path;
     private String displayName;
     private String songDuration;
+    private String album;
 
-    public Song(String title, String artist, String path, String displayName, String songDuration) {
+    public Song(String title, String artist, String path, String displayName, String songDuration, String album) {
         this.title = title;
         this.artist = artist;
         this.path = path;
         this.displayName = displayName;
         this.songDuration = songDuration;
+        this.album = album;
     }
 
     public String getTitle() {
@@ -35,5 +37,9 @@ public class Song {
 
     public String getSongDuration() {
         return songDuration;
+    }
+
+    public String getAlbum() {
+        return album;
     }
 }

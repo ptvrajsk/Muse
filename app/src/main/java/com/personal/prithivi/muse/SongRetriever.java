@@ -24,7 +24,8 @@ public class SongRetriever {
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DURATION
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ALBUM
         };
         final String sortOrder = MediaStore.Audio.AudioColumns.TITLE + " COLLATE LOCALIZED ASC";
         ArrayList<Song> mp3Files = new ArrayList<>();
@@ -33,19 +34,23 @@ public class SongRetriever {
         try {
             Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
             cursor = this.context.getContentResolver().query(uri, projection, selection, null, sortOrder);
-            if( cursor != null){
+
+            if( cursor != null) {
                 cursor.moveToFirst();
 
-                while( !cursor.isAfterLast() ){
+                while( !cursor.isAfterLast() ) {
+
                     String title = cursor.getString(0);
                     String artist = cursor.getString(1);
                     String path = cursor.getString(2);
                     String displayName  = cursor.getString(3);
                     String songDuration = cursor.getString(4);
+                    String album = cursor.getString((5));
                     cursor.moveToNext();
                     if(path != null && path.endsWith(".mp3")) {
-                        mp3Files.add(new Song (title, artist, path, displayName, songDuration));
+                        mp3Files.add(new Song (title, artist, path, displayName, songDuration, album));
                     }
+
                 }
 
             }
@@ -56,9 +61,11 @@ public class SongRetriever {
             }
 
         } catch (Exception e) {
+
             Log.e("TAG", e.toString());
-        }finally{
-            if( cursor != null){
+
+        } finally {
+            if( cursor != null) {
                 cursor.close();
             }
         }
