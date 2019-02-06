@@ -19,12 +19,12 @@ public class SongsList extends AppCompatActivity {
         setContentView(R.layout.activity_songs_list);
 
         ArrayList<Song> songs = new ArrayList<>();
-        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
-        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
-        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
-        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
-        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
-        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
+//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
+//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
+//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
+//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
+//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
+//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration"));
 
         recyclerView = this.findViewById(R.id.songList);
         recyclerViewAdapter = new SongAdapter(songs);

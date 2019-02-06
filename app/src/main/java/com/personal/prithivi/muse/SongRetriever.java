@@ -25,7 +25,8 @@ public class SongRetriever {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ALBUM
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Images.Thumbnails.DATA
         };
         final String sortOrder = MediaStore.Audio.AudioColumns.TITLE + " COLLATE LOCALIZED ASC";
         ArrayList<Song> mp3Files = new ArrayList<>();
@@ -46,6 +47,9 @@ public class SongRetriever {
                     String displayName  = cursor.getString(3);
                     String songDuration = cursor.getString(4);
                     String album = cursor.getString((5));
+
+                    Log.i("ThumbnailLocation", cursor.getString(6));
+
                     cursor.moveToNext();
                     if(path != null && path.endsWith(".mp3")) {
                         mp3Files.add(new Song (title, artist, path, displayName, songDuration, album));

@@ -3,6 +3,7 @@ package com.personal.prithivi.muse;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +12,13 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class Main extends AppCompatActivity {
 
     private final int EXTERNAL_STORAGE_READ_SUCCESS = 2;
     private final String DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE = "Unable to read from external storage.";
+    private final String DESCRIPTION_EXITING_APPLICATION = "Exiting Application.";
     SongRetriever songRetriever = new SongRetriever(this);
     private ImageView testImg;
 
@@ -23,6 +27,8 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //Verify that application has persmissions to read from storage
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -31,14 +37,11 @@ public class Main extends AppCompatActivity {
                     EXTERNAL_STORAGE_READ_SUCCESS);
 
         } else {
-
             this.songRetriever.retrieveSongs();
-
         }
 
 
         this.testImg = this.findViewById(R.id.testImage);
-
 
 
     }
@@ -57,11 +60,12 @@ public class Main extends AppCompatActivity {
 
                 } else {
                     Toast.makeText(this, this.DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE,
-                            Toast.LENGTH_LONG);
+                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, this.DESCRIPTION_EXITING_APPLICATION,
+                            Toast.LENGTH_LONG).show();
                 }
 
 
-                return;
             }
 
             // other 'case' lines to check for other
