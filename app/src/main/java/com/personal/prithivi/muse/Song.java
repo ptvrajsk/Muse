@@ -1,10 +1,11 @@
 package com.personal.prithivi.muse;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
-public class Song implements Parcelable {
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 
+public class Song {
 
     private String title;
     private String artist;
@@ -12,17 +13,20 @@ public class Song implements Parcelable {
     private String displayName;
     private String songDuration;
     private String album;
+    private Bitmap thumbnail;
+    private ThumbnailStatus hasThumbnail;
 
-    public static final Parcelable.Creator<Song> CREATOR
-            = new Parcelable.Creator<Song>() {
-        public Song createFromParcel(Parcel parcel) {
-            return new Song(parcel);
-        }
+    //////////////////////////////////////
+    //       Song Specific Enum         //
+    //////////////////////////////////////
 
-        public Song[] newArray(int size) {
-            return new Song[size];
-        }
-    };
+    private enum ThumbnailStatus {
+        AVAILABLE, UNAVAILABLE, UNKNOWN
+    }
+
+    //////////////////////////////////////
+    //           Constructors           //
+    //////////////////////////////////////
 
     public Song(String title, String artist, String path, String displayName, String songDuration, String album) {
         this.title = title;
@@ -31,32 +35,43 @@ public class Song implements Parcelable {
         this.displayName = displayName;
         this.songDuration = songDuration;
         this.album = album;
+        this.hasThumbnail = ThumbnailStatus.UNKNOWN;
     }
 
-    public Song(Parcel parcel) {
-        this.title = parcel.readString();
-        this.artist = parcel.readString();
-        this.path = parcel.readString();
-        this.displayName = parcel.readString();
-        this.songDuration = parcel.readString();
-        this.album = parcel.readString();
+    //////////////////////////////////////
+    //         Other functions          //
+    //////////////////////////////////////
+
+    public boolean generateThumbnail() {
+
+        if (this.hasThumbnail == ThumbnailStatus.UNKNOWN) {
+
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(this.path);
+            byte[] raw = mmr.getEmbeddedPicture();
+            mmr.release();
+
+            if (raw != null) {
+                this.thumbnail = BitmapFactory.decodeByteArray(raw, 0, raw.length);
+                this.hasThumbnail = ThumbnailStatus.AVAILABLE;
+                return true;
+            } else {
+                this.hasThumbnail = ThumbnailStatus.UNAVAILABLE;
+                return false;
+            }
+
+        }
+
+        return false;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean hasThumbnail() {
+        return this.hasThumbnail == ThumbnailStatus.AVAILABLE;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(this.title);
-        parcel.writeString(this.artist);
-        parcel.writeString(this.path);
-        parcel.writeString(this.displayName);
-        parcel.writeString(this.songDuration);
-        parcel.writeString(this.album);
-    }
-
+    //////////////////////////////////////
+    //        Getters & Setters         //
+    //////////////////////////////////////
 
     public String getTitle() {
         return title;
@@ -81,4 +96,9 @@ public class Song implements Parcelable {
     public String getAlbum() {
         return album;
     }
+
+    public Bitmap getThumbnail() {
+        return thumbnail;
+    }
+
 }

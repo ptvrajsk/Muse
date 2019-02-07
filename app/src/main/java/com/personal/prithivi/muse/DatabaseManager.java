@@ -8,15 +8,16 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class SongRetriever {
+public class DatabaseManager {
 
     private Context context;
+    private static ArrayList<Song> songsCollection;
 
-    public SongRetriever(Context context) {
+    public DatabaseManager(Context context) {
         this.context = context;
     }
 
-    public ArrayList<Song> retrieveSongs() {
+    public void retrieveSongs() {
 
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         String[] projection = {
@@ -25,8 +26,7 @@ public class SongRetriever {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Images.Thumbnails.DATA
+                MediaStore.Audio.Media.ALBUM
         };
         final String sortOrder = MediaStore.Audio.AudioColumns.TITLE + " COLLATE LOCALIZED ASC";
         ArrayList<Song> mp3Files = new ArrayList<>();
@@ -47,8 +47,6 @@ public class SongRetriever {
                     String displayName  = cursor.getString(3);
                     String songDuration = cursor.getString(4);
                     String album = cursor.getString((5));
-
-                    Log.i("ThumbnailLocation", cursor.getString(6));
 
                     cursor.moveToNext();
                     if(path != null && path.endsWith(".mp3")) {
@@ -74,7 +72,11 @@ public class SongRetriever {
             }
         }
 
-        return mp3Files;
+        DatabaseManager.songsCollection = mp3Files;
+    }
+
+    public static ArrayList<Song> getSongsCollection() {
+        return songsCollection;
     }
 
 

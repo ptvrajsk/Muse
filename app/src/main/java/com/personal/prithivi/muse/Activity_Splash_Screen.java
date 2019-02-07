@@ -1,32 +1,34 @@
 package com.personal.prithivi.muse;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
-import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.File;
+import java.util.ArrayList;
 
-public class Main extends AppCompatActivity {
+public class Activity_Splash_Screen extends AppCompatActivity {
 
     private final int EXTERNAL_STORAGE_READ_SUCCESS = 2;
     private final String DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE = "Unable to read from external storage.";
     private final String DESCRIPTION_EXITING_APPLICATION = "Exiting Application.";
-    SongRetriever songRetriever = new SongRetriever(this);
+    DatabaseManager databaseManager = new DatabaseManager(this);
     private ImageView testImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_splash_screen);
+        ArrayList<Song> songs = null;
 
         //Verify that application has persmissions to read from storage
         if (ContextCompat.checkSelfPermission(this,
@@ -37,11 +39,22 @@ public class Main extends AppCompatActivity {
                     EXTERNAL_STORAGE_READ_SUCCESS);
 
         } else {
-            this.songRetriever.retrieveSongs();
+            this.databaseManager.retrieveSongs();
         }
 
+        Intent i = new Intent(this, Activity_List_Songs.class);
+//        i.putParcelableArrayListExtra("SongsCollection", songs);
 
-        this.testImg = this.findViewById(R.id.testImage);
+        final Intent nextAct = i;
+
+
+        Button butt = this.findViewById(R.id.nextActivityButton);
+        butt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.getContext().startActivity(nextAct);
+            }
+        });
 
 
     }
@@ -56,7 +69,7 @@ public class Main extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    this.songRetriever.retrieveSongs();
+                    return;
 
                 } else {
                     Toast.makeText(this, this.DESCRIPTION_UNABLE_TO_READ_EXTERNAL_STORAGE,
