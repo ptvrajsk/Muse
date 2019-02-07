@@ -1,5 +1,6 @@
 package com.personal.prithivi.muse;
 
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,14 @@ public class Activity_List_Songs extends AppCompatActivity {
         setContentView(R.layout.activity_list_songs);
 
         final ArrayList<Song> songs = DatabaseManager.getSongsCollection();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Song s : songs) {
+                    s.generateThumbnail();
+                }
+            }
+        }).start();
 //        ArrayList<Song> songs = new ArrayList<>();
 //        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
 //        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
@@ -30,12 +39,15 @@ public class Activity_List_Songs extends AppCompatActivity {
 //        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
 
         recyclerView = this.findViewById(R.id.songList);
-        recyclerViewAdapter = new Song_RecyclerView_Adapter(songs);
+        recyclerViewAdapter = new Song_RecyclerView_Adapter(songs,
+                BitmapFactory.decodeResource(this.getResources(), R.drawable.image_default_thumbnail));
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public void onScrollStateChanged(int state) {
 
                 switch (state) {
+
+                    case RecyclerView.SCROLL_STATE_SETTLING:
 
                     case RecyclerView.SCROLL_STATE_IDLE:
                         final int start = this.findFirstVisibleItemPosition();
@@ -64,13 +76,14 @@ public class Activity_List_Songs extends AppCompatActivity {
                         }).start();
 
 
-
                 }
 
                 super.onScrollStateChanged(state);
             }
         });
         recyclerView.setAdapter(recyclerViewAdapter);
+
+
 
 
     }

@@ -47,7 +47,13 @@ public class Song {
         if (this.hasThumbnail == ThumbnailStatus.UNKNOWN) {
 
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(this.path);
+
+            try {
+                mmr.setDataSource(this.path);
+            } catch (RuntimeException e) {
+                return false;
+            }
+
             byte[] raw = mmr.getEmbeddedPicture();
             mmr.release();
 

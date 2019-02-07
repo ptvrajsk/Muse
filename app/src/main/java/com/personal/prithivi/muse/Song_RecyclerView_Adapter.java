@@ -1,5 +1,8 @@
 package com.personal.prithivi.muse;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +17,12 @@ import java.util.ArrayList;
 public class Song_RecyclerView_Adapter extends RecyclerView.Adapter<Song_RecyclerView_Adapter.SongHolder> {
 
     private ArrayList<Song> allSongs;
+    private Bitmap defaultThumbnail;
+
+
+    //////////////////////////////////////
+    //           Holder Class           //
+    //////////////////////////////////////
 
     public static class SongHolder extends RecyclerView.ViewHolder {
 
@@ -30,8 +39,13 @@ public class Song_RecyclerView_Adapter extends RecyclerView.Adapter<Song_Recycle
     }
 
 
-    public Song_RecyclerView_Adapter(ArrayList<Song> allSongs) {
+    //////////////////////////////////////
+    //        Adapter functions         //
+    //////////////////////////////////////
+
+    public Song_RecyclerView_Adapter(ArrayList<Song> allSongs, Bitmap defaultThumbnail) {
         this.allSongs = allSongs;
+        this.defaultThumbnail = defaultThumbnail;
     }
 
     @NonNull
@@ -52,12 +66,10 @@ public class Song_RecyclerView_Adapter extends RecyclerView.Adapter<Song_Recycle
         if (s.hasThumbnail()) {
             holder.thumbnail.setImageBitmap(s.getThumbnail());
         } else {
-            //TODO: Add default image for non-thumbnail songs
+            holder.thumbnail.setImageBitmap(this.defaultThumbnail);
         }
 
     }
-
-
 
 
     @Override
