@@ -1,6 +1,8 @@
 package com.personal.prithivi.muse;
 
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,11 @@ public class Activity_List_Songs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_songs);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.BLACK);
+        }
+
+
         final ArrayList<Song> songs = DatabaseManager.getSongsCollection();
         new Thread(new Runnable() {
             @Override
@@ -30,13 +37,6 @@ public class Activity_List_Songs extends AppCompatActivity {
                 }
             }
         }).start();
-//        ArrayList<Song> songs = new ArrayList<>();
-//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
-//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
-//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
-//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
-//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
-//        songs.add(new Song("title 1", "artist 1", "path 1", "name", "Duration", "Album"));
 
         recyclerView = this.findViewById(R.id.songList);
         recyclerViewAdapter = new Song_RecyclerView_Adapter(songs,
