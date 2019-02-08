@@ -11,20 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity
-            android:name=".Activity_List_Songs">
-
-        </activity>
-
-        <activity
-            android:name=".Activity_Splash_Screen">
+        <activity android:name=".Activity_Play_Screen"></activity>
+        <activity android:name=".Activity_List_Songs"></activity>
+        <activity android:name=".Activity_Splash_Screen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

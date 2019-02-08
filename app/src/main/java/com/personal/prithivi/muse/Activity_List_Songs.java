@@ -1,22 +1,24 @@
 package com.personal.prithivi.muse;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class Activity_List_Songs extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter recyclerViewAdapter;
-    private RecyclerView.LayoutManager recyclerViewLayoutManager;
+    private RecyclerView_Adapter_Song recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class Activity_List_Songs extends AppCompatActivity {
         }).start();
 
         recyclerView = this.findViewById(R.id.songList);
-        recyclerViewAdapter = new Song_RecyclerView_Adapter(songs,
+        recyclerViewAdapter = new RecyclerView_Adapter_Song(songs,
                 BitmapFactory.decodeResource(this.getResources(), R.drawable.image_default_thumbnail));
         recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
@@ -83,6 +85,17 @@ public class Activity_List_Songs extends AppCompatActivity {
         });
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        final Intent i = new Intent(this, Activity_Play_Screen.class);
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerView_ItemClickListener_Song(this,
+                        new RecyclerView_ItemClickListener_Song.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        i.putExtra("SelectedSong", songs.get(position));
+                        view.getContext().startActivity(i);
+                    }
+                }));
 
 
 

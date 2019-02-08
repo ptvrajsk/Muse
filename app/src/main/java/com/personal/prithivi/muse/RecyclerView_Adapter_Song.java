@@ -1,11 +1,8 @@
 package com.personal.prithivi.muse;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Song_RecyclerView_Adapter extends RecyclerView.Adapter<Song_RecyclerView_Adapter.SongHolder> {
+public class RecyclerView_Adapter_Song extends RecyclerView.Adapter<RecyclerView_Adapter_Song.SongHolder> {
 
     private ArrayList<Song> allSongs;
     private Bitmap defaultThumbnail;
@@ -43,7 +40,7 @@ public class Song_RecyclerView_Adapter extends RecyclerView.Adapter<Song_Recycle
     //        Adapter functions         //
     //////////////////////////////////////
 
-    public Song_RecyclerView_Adapter(ArrayList<Song> allSongs, Bitmap defaultThumbnail) {
+    public RecyclerView_Adapter_Song(ArrayList<Song> allSongs, Bitmap defaultThumbnail) {
         this.allSongs = allSongs;
         this.defaultThumbnail = defaultThumbnail;
     }
@@ -68,6 +65,7 @@ public class Song_RecyclerView_Adapter extends RecyclerView.Adapter<Song_Recycle
         } else {
             holder.thumbnail.setImageBitmap(this.defaultThumbnail);
         }
+
 
     }
 

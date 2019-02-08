@@ -4,8 +4,10 @@ package com.personal.prithivi.muse;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Song {
+public class Song implements Parcelable {
 
     private String title;
     private String artist;
@@ -36,6 +38,17 @@ public class Song {
         this.songDuration = songDuration;
         this.album = album;
         this.hasThumbnail = ThumbnailStatus.UNKNOWN;
+    }
+
+    public Song(Parcel parcel) {
+        this.title = parcel.readString();
+        this.artist = parcel.readString();
+        this.path = parcel.readString();
+        this.displayName = parcel.readString();
+        this.songDuration = parcel.readString();
+        this.album = parcel.readString();
+        this.hasThumbnail = ThumbnailStatus.UNKNOWN;
+        this.generateThumbnail();
     }
 
     //////////////////////////////////////
@@ -74,6 +87,36 @@ public class Song {
     public boolean hasThumbnail() {
         return this.hasThumbnail == ThumbnailStatus.AVAILABLE;
     }
+
+    //////////////////////////////////////
+    //       Parcelable Interface       //
+    //////////////////////////////////////
+
+    public static final Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
+        public Song createFromParcel(Parcel in) {
+            return new Song(in);
+        }
+        @Override
+        public Song[] newArray(int i) {
+            return new Song[i];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(this.title);
+        parcel.writeString(this.artist);
+        parcel.writeString(this.path);
+        parcel.writeString(this.displayName);
+        parcel.writeString(this.songDuration);
+        parcel.writeString(this.album);
+    }
+
 
     //////////////////////////////////////
     //        Getters & Setters         //
